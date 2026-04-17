@@ -2,57 +2,76 @@ import java.util.*;
 
 public class problemstatements {
 
-    static class Client {
-        String name;
-        int risk;
+    // Merge Sort
+    static void mergeSort(int[] arr, int l, int r) {
+        if (l < r) {
+            int m = (l + r) / 2;
 
-        Client(String name, int risk) {
-            this.name = name;
-            this.risk = risk;
-        }
+            mergeSort(arr, l, m);
+            mergeSort(arr, m + 1, r);
 
-        public String toString() {
-            return name + ":" + risk;
+            merge(arr, l, m, r);
         }
     }
 
-    static void bubble(Client[] arr) {
-        for (int i = 0; i < arr.length - 1; i++) {
-            for (int j = 0; j < arr.length - i - 1; j++) {
-                if (arr[j].risk > arr[j + 1].risk) {
-                    Client temp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = temp;
-                }
-            }
+    static void merge(int[] arr, int l, int m, int r) {
+        int[] left = Arrays.copyOfRange(arr, l, m + 1);
+        int[] right = Arrays.copyOfRange(arr, m + 1, r + 1);
+
+        int i = 0, j = 0, k = l;
+
+        while (i < left.length && j < right.length) {
+            if (left[i] <= right[j]) arr[k++] = left[i++];
+            else arr[k++] = right[j++];
+        }
+
+        while (i < left.length) arr[k++] = left[i++];
+        while (j < right.length) arr[k++] = right[j++];
+    }
+
+    // Quick Sort (DESC)
+    static void quickSort(int[] arr, int low, int high) {
+        if (low < high) {
+            int pi = partition(arr, low, high);
+
+            quickSort(arr, low, pi - 1);
+            quickSort(arr, pi + 1, high);
         }
     }
 
-    static void insertion(Client[] arr) {
-        for (int i = 1; i < arr.length; i++) {
-            Client key = arr[i];
-            int j = i - 1;
+    static int partition(int[] arr, int low, int high) {
+        int pivot = arr[high];
+        int i = low - 1;
 
-            while (j >= 0 && arr[j].risk < key.risk) {
-                arr[j + 1] = arr[j];
-                j--;
+        for (int j = low; j < high; j++) {
+            if (arr[j] > pivot) { // DESC
+                i++;
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
             }
-            arr[j + 1] = key;
         }
+
+        int temp = arr[i + 1];
+        arr[i + 1] = arr[high];
+        arr[high] = temp;
+
+        return i + 1;
     }
 
     public static void main(String[] args) {
 
-        Client[] arr = {
-                new Client("A", 20),
-                new Client("B", 50),
-                new Client("C", 80)
-        };
+        int[] arr = {500, 100, 300};
 
-        bubble(arr);
-        System.out.println("Bubble: " + Arrays.toString(arr));
+        mergeSort(arr, 0, arr.length - 1);
+        System.out.println("Merge Sort (ASC): " + Arrays.toString(arr));
 
-        insertion(arr);
-        System.out.println("Insertion DESC: " + Arrays.toString(arr));
+        quickSort(arr, 0, arr.length - 1);
+        System.out.println("Quick Sort (DESC): " + Arrays.toString(arr));
+
+        int total = 0;
+        for (int v : arr) total += v;
+
+        System.out.println("Total Volume: " + total);
     }
 }
